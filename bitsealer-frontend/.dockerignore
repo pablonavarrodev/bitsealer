@@ -1,0 +1,18 @@
+# VCS
+.git
+.gitignore
+
+# Dependencias/cache
+node_modules
+npm-debug.log
+yarn.lock
+pnpm-lock.yaml
+
+# Builds
+dist
+
+# SO / IDE
+.DS_Store
+Thumbs.db
+.vscode
+.idea

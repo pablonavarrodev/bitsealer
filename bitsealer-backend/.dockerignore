@@ -1,0 +1,22 @@
+# Git y VCS
+.git
+.gitignore
+
+# Maven outputs
+target
+
+# IDE
+.vscode
+.idea
+*.iml
+.classpath
+.project
+.settings
+
+# SO
+.DS_Store
+Thumbs.db
+
+# Archivos que no debe copiar el build
+README.md
+.env

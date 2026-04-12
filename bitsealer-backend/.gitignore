@@ -1,0 +1,37 @@
+# Build/Java
+target/
+*.class
+*.jar
+*.war
+
+# Logs
+*.log
+hs_err_pid*
+
+# IDE
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets / dumps
+*.pem
+*.key
+*.p12
+*.jks
+*.keystore
+*.sql
+*.dump
+
+# Env
+.env
+
+# Docker
+**/.env.local
+**/.env.*.local
