@@ -1,9 +1,9 @@
 package com.bitsealer.security.jwt;
 
-import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -18,10 +18,7 @@ public class JwtUtils {
     @Value("${security.jwt.secret}")
     private String jwtSecret;
 
-    // 15 min de validez para access token
     private final long jwtExpirationMs = 15 * 60 * 1000;
-    // 7 días para refresh token
-    private final long refreshExpirationMs = 7 * 24 * 60 * 60 * 1000;
 
     @PostConstruct
     public void init() {
@@ -50,21 +47,9 @@ public class JwtUtils {
                 .compact();
     }
 
-    public String generateRefreshToken(String subject) {
-        Date now = new Date();
-        Date expire = new Date(now.getTime() + refreshExpirationMs);
-        return Jwts.builder()
-                .subject(subject)
-                .issuedAt(now)
-                .expiration(expire)
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
-                .compact();
-    }
-
-    /** Extrae todos los claims del token. */
     public Claims parseTokenClaims(String token) {
-        return Jwts.parser() // ✅ nuevo flujo JJWT 0.12.x
-                .verifyWith(getSigningKey()) // clave de verificación
+        return Jwts.parser()
+                .verifyWith(getSigningKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();

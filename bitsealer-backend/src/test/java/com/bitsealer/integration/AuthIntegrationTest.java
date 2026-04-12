@@ -45,7 +45,7 @@ class AuthIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    @DisplayName("Registro correcto devuelve 201 y JwtResponse")
+    @DisplayName("Registro correcto devuelve 201 y accessToken")
     void register_Success() throws Exception {
         Map<String, String> body = new HashMap<>();
         body.put("name", "alice");
@@ -57,7 +57,7 @@ class AuthIntegrationTest extends BaseIntegrationTest {
                         .content(objectMapper.writeValueAsString(body)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.accessToken").isNotEmpty())
-                .andExpect(jsonPath("$.refreshToken").isNotEmpty())
+                .andExpect(jsonPath("$.refreshToken").doesNotExist())
                 .andExpect(jsonPath("$.user.email").value("alice@example.com"));
 
         AppUser user = userRepository.findByEmail("alice@example.com").orElseThrow();
@@ -107,7 +107,7 @@ class AuthIntegrationTest extends BaseIntegrationTest {
     }
 
     @Test
-    @DisplayName("Login correcto devuelve 200 + JwtResponse")
+    @DisplayName("Login correcto devuelve 200 + accessToken")
     void login_Success() throws Exception {
         AppUser user = new AppUser();
         user.setUsername("alice");
@@ -125,7 +125,7 @@ class AuthIntegrationTest extends BaseIntegrationTest {
                         .content(objectMapper.writeValueAsString(body)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accessToken").isNotEmpty())
-                .andExpect(jsonPath("$.refreshToken").isNotEmpty());
+                .andExpect(jsonPath("$.refreshToken").doesNotExist());
     }
 
     @Test
