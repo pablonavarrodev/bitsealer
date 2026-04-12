@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext'
 
 const mobileNavItems = [
     { label: 'Inicio', href: '/dashboard' },
-    { label: 'Sellar archivo', href: '/upload' },
+    { label: 'Sellar Archivo', href: '/upload' },
     { label: 'Historial', href: '/history' },
     { label: 'Ajustes', href: '/settings' },
 ]
@@ -15,28 +15,25 @@ export default function Topbar() {
     const menuRef = useRef(null)
 
     useEffect(() => {
-        function handlePointerOutside(event) {
+        function handleClickOutside(event) {
             if (menuRef.current && !menuRef.current.contains(event.target)) {
                 setMobileMenuOpen(false)
             }
         }
 
-        document.addEventListener('mousedown', handlePointerOutside)
-        document.addEventListener('touchstart', handlePointerOutside)
-
+        document.addEventListener('mousedown', handleClickOutside)
         return () => {
-            document.removeEventListener('mousedown', handlePointerOutside)
-            document.removeEventListener('touchstart', handlePointerOutside)
+            document.removeEventListener('mousedown', handleClickOutside)
         }
     }, [])
 
     return (
         <header className="relative h-14 border-b border-white/10 px-4 flex items-center justify-between">
-            <div className="relative lg:hidden" ref={menuRef}>
+            <div className="relative md:hidden" ref={menuRef}>
                 <button
                     type="button"
                     onClick={() => setMobileMenuOpen((prev) => !prev)}
-                    className="inline-flex items-center px-3 py-1.5 rounded-md text-sm bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15"
+                    className="px-3 py-1.5 rounded-md text-sm bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15"
                 >
                     Menú
                 </button>
@@ -64,10 +61,7 @@ export default function Topbar() {
 
                             <button
                                 type="button"
-                                onClick={() => {
-                                    setMobileMenuOpen(false)
-                                    logout()
-                                }}
+                                onClick={logout}
                                 className="mt-1 rounded-lg px-3 py-2 text-left text-sm font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10"
                             >
                                 Salir
@@ -77,18 +71,18 @@ export default function Topbar() {
                 )}
             </div>
 
-            <div className="hidden lg:block" />
+            <div className="hidden md:block" />
 
             <div className="flex items-center gap-3 ml-auto min-w-0">
                 {user && (
-                    <span className="hidden md:block truncate text-sm text-slate-500 dark:text-slate-300 max-w-[220px]">
+                    <span className="hidden sm:block truncate text-sm text-slate-500 dark:text-slate-300 max-w-[220px]">
                         {user.email}
                     </span>
                 )}
 
                 <button
                     onClick={logout}
-                    className="hidden lg:inline-flex px-3 py-1.5 rounded-md text-sm bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15"
+                    className="hidden md:inline-flex px-3 py-1.5 rounded-md text-sm bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15"
                 >
                     Salir
                 </button>
