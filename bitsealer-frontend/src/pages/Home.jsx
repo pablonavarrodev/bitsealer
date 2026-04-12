@@ -49,7 +49,7 @@ export default function Home() {
   }, [])
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col overflow-x-hidden">
       <style>{`
         /* Anti-flicker + animación estable */
         .reveal {
@@ -163,7 +163,7 @@ export default function Home() {
           </div>
 
           {/* Visual */}
-          <div className="relative" ref={heroVisualRef}>
+          <div className="relative hidden md:block" ref={heroVisualRef}>
             <GlowBackdrop />
             <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-black/5 dark:border-white/10">
               <img src="/assets/hero.jpg" alt="Sellado en Bitcoin" className="w-full" />
@@ -175,7 +175,6 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </div>
       </section>
 
       {/* STEPS */}
