@@ -18,7 +18,6 @@ import PublicNavbar from '../components/public/PublicNavbar'
 import PublicFooter from '../components/public/PublicFooter'
 
 export default function Home() {
-  // Animación actual (IntersectionObserver + clase .reveal)
   const heroRef = useReveal(0)
   const heroVisualRef = useReveal(120)
   const trustRef = useReveal(0)
@@ -32,11 +31,9 @@ export default function Home() {
 
   const techRef = useReveal(0)
   const deliverRef = useReveal(0)
-  const verifyRef = useReveal(0)
   const faqRef = useReveal(0)
   const freeRef = useReveal(0)
 
-  // Anti-parpadeo: marcar una vez animado aunque el observer vuelva a disparar
   useEffect(() => {
     const onAnimEnd = (e) => {
       const el = e.target
@@ -44,6 +41,7 @@ export default function Home() {
         el.classList.add('bs-animated')
       }
     }
+
     document.addEventListener('animationend', onAnimEnd, true)
     return () => document.removeEventListener('animationend', onAnimEnd, true)
   }, [])
@@ -51,7 +49,6 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col overflow-x-hidden">
       <style>{`
-        /* Anti-flicker + animación estable */
         .reveal {
           opacity: 0;
           transform: translateY(14px);
@@ -59,11 +56,11 @@ export default function Home() {
           backface-visibility: hidden;
           transform-style: preserve-3d;
         }
-        /* Solo anima si NO está marcada como ya animada */
+
         .reveal:not(.bs-animated) {
           animation: bs_fadeUp .65s ease both;
         }
-        /* Una vez animada, fija el estado final (evita parpadeo al re-entrar) */
+
         .reveal.bs-animated {
           opacity: 1;
           transform: translateY(0);
@@ -74,13 +71,30 @@ export default function Home() {
           to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes bs_float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-        .bs-float { animation: bs_float 6s ease-in-out infinite; will-change: transform; }
+        @keyframes bs_float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-8px); }
+        }
 
-        @keyframes bs_glow { 0%,100% { opacity: .55; } 50% { opacity: .9; } }
-        .bs-glow { animation: bs_glow 8s ease-in-out infinite; }
+        .bs-float {
+          animation: bs_float 6s ease-in-out infinite;
+          will-change: transform;
+        }
 
-        @keyframes bs_shine { 0% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
+        @keyframes bs_glow {
+          0%, 100% { opacity: .55; }
+          50% { opacity: .9; }
+        }
+
+        .bs-glow {
+          animation: bs_glow 8s ease-in-out infinite;
+        }
+
+        @keyframes bs_shine {
+          0% { transform: translateX(-120%); }
+          100% { transform: translateX(120%); }
+        }
+
         .bs-shine::after {
           content: '';
           position: absolute;
@@ -92,7 +106,6 @@ export default function Home() {
           opacity: .55;
         }
 
-        /* Accesibilidad: si el usuario prefiere menos movimiento */
         @media (prefers-reduced-motion: reduce) {
           .reveal:not(.bs-animated) { animation: none; }
           .reveal { opacity: 1; transform: none; }
@@ -128,6 +141,7 @@ export default function Home() {
               >
                 Sellar archivo gratis <ArrowRight className="size-4" />
               </a>
+
               <button
                 type="button"
                 onClick={() => {
@@ -153,7 +167,6 @@ export default function Home() {
               />
             </div>
 
-            {/* Logos */}
             <div className="mt-10 flex flex-wrap items-center gap-6 opacity-80">
               <img src="/assets/logos/partner1.svg" alt="Partner 1" className="h-8" />
               <img src="/assets/logos/partner2.svg" alt="Partner 2" className="h-8" />
@@ -165,6 +178,7 @@ export default function Home() {
           {/* Visual */}
           <div className="relative hidden md:block" ref={heroVisualRef}>
             <GlowBackdrop />
+
             <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-black/5 dark:border-white/10">
               <img src="/assets/hero.jpg" alt="Sellado en Bitcoin" className="w-full" />
             </div>
@@ -175,19 +189,44 @@ export default function Home() {
               </div>
             </div>
           </div>
+        </div>
       </section>
 
       {/* STEPS */}
       <section id="como-funciona" className="max-w-6xl mx-auto px-4 py-14" ref={stepsRef}>
-        <SectionHeader align="center" title="Cómo funciona" subtitle="Un flujo sencillo con pruebas descargables y verificables." />
+        <SectionHeader
+          align="center"
+          title="Cómo funciona"
+          subtitle="Un flujo sencillo con pruebas descargables y verificables."
+        />
 
         <StepsTimeline
           steps={[
-            { title: 'Subes un archivo desde tu navegador', description: 'Selecciona o arrastra tu archivo para iniciar el sellado.', ref: step1Ref },
-            { title: 'Generamos su hash SHA-256', description: 'Creamos una huella única del contenido sin almacenar el archivo.', ref: step2Ref },
-            { title: 'Merkle + OpenTimestamps', description: 'Se incluye en un árbol de Merkle y se publica en calendarios públicos.', ref: step3Ref },
-            { title: 'Anclaje a Bitcoin', description: 'El calendario queda anclado a Bitcoin de forma periódica (en unas horas).', ref: step4Ref },
-            { title: 'Descargas .ots y certificado PDF', description: 'Te llevas las pruebas para verificar ahora o en el futuro.', ref: step5Ref },
+            {
+              title: 'Subes un archivo desde tu navegador',
+              description: 'Selecciona o arrastra tu archivo para iniciar el sellado.',
+              ref: step1Ref,
+            },
+            {
+              title: 'Generamos su hash SHA-256',
+              description: 'Creamos una huella única del contenido sin almacenar el archivo.',
+              ref: step2Ref,
+            },
+            {
+              title: 'Merkle + OpenTimestamps',
+              description: 'Se incluye en un árbol de Merkle y se publica en calendarios públicos.',
+              ref: step3Ref,
+            },
+            {
+              title: 'Anclaje a Bitcoin',
+              description: 'El calendario queda anclado a Bitcoin de forma periódica (en unas horas).',
+              ref: step4Ref,
+            },
+            {
+              title: 'Descargas .ots y certificado PDF',
+              description: 'Te llevas las pruebas para verificar ahora o en el futuro.',
+              ref: step5Ref,
+            },
           ]}
         />
       </section>
@@ -201,6 +240,7 @@ export default function Home() {
               title="Sellado temporal con OpenTimestamps y Bitcoin"
               subtitle="Estándar abierto, verificable e independiente de un proveedor."
             />
+
             <p className="mt-4 text-slate-600 dark:text-slate-300">
               Usamos OpenTimestamps para convertir tu archivo en una prueba criptográfica verificable. En vez de escribir una
               transacción por cada documento, se agrupan muchos hashes en un árbol de Merkle y se publican en calendarios
@@ -233,6 +273,7 @@ export default function Home() {
               'Diseñado para conservarse y verificarse en el futuro',
             ]}
           />
+
           <DeliverableCard
             type="PDF"
             title="Certificado PDF"
@@ -246,11 +287,14 @@ export default function Home() {
         </div>
       </section>
 
-      
-
       {/* FAQ TÉCNICA */}
       <section id="faq" className="max-w-6xl mx-auto px-4 py-14" ref={faqRef}>
-        <SectionHeader align="center" title="Preguntas frecuentes" subtitle="Detalles técnicos sin humo, explicados de forma clara." />
+        <SectionHeader
+          align="center"
+          title="Preguntas frecuentes"
+          subtitle="Detalles técnicos sin humo, explicados de forma clara."
+        />
+
         <FaqAccordion
           items={[
             {
@@ -293,9 +337,10 @@ export default function Home() {
         />
       </section>
 
-      {/* FREE + FINAL CTA (id="precio" para no romper el navbar actual) */}
+      {/* FREE + FINAL CTA */}
       <section id="precio" className="relative">
         <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#fff3e0] to-[#fffbeb] dark:from-amber-500/10 dark:to-amber-500/5" />
+
         <div className="max-w-6xl mx-auto px-4 py-14" ref={freeRef}>
           <InfoBannerV2
             icon={Gift}
@@ -305,8 +350,6 @@ export default function Home() {
             ctaHref="mailto:?subject=BitSealer%20-%20Inter%C3%A9s%20Enterprise&body=Hola%2C%0A%0ASomos%20una%20empresa%20interesada%20en%20BitSealer.%0A%0A-%20Volumen%20aproximado%3A%20%0A-%20Necesidad%20principal%3A%20(sellado%20r%C3%A1pido%2Finfra%20dedicada%2Fintegraci%C3%B3n%2Fcompliance)%0A-%20Detalles%20t%C3%A9cnicos%3A%20%0A-%20Contacto%3A%20%0A%0AGracias."
             external
           />
-
-          
         </div>
       </section>
 
@@ -423,6 +466,7 @@ function TechDiagramCard() {
   return (
     <div className="card p-6 md:p-8 bg-white/70 dark:bg-white/5 border border-black/5 dark:border-white/10 backdrop-blur">
       <div className="text-sm font-semibold text-slate-600 dark:text-slate-300">Flujo de sellado</div>
+
       <div className="mt-4 flex flex-wrap items-center gap-2">
         {nodes.map((n, idx) => (
           <div key={n.label} className="flex items-center gap-2">
@@ -459,6 +503,7 @@ function MiniStat({ icon: Icon, title, value }) {
 
 function DeliverableCard({ type, title, desc, bullets }) {
   const ref = useReveal(0)
+
   return (
     <div ref={ref} className="card p-6 md:p-7 hover:shadow-xl hover:shadow-orange-200/30 transition">
       <div className="flex items-start justify-between gap-4">
@@ -470,6 +515,7 @@ function DeliverableCard({ type, title, desc, bullets }) {
           <h3 className="mt-3 text-xl font-extrabold tracking-tight">{title}</h3>
           <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">{desc}</p>
         </div>
+
         <div className="hidden sm:flex items-center justify-center size-12 rounded-2xl bg-gradient-to-r from-[#f7931a] to-[#ffcc00] text-white shadow-sm">
           <Check className="size-6" />
         </div>
@@ -491,12 +537,14 @@ function DeliverableCard({ type, title, desc, bullets }) {
 
 function FaqAccordion({ items }) {
   const [openIdx, setOpenIdx] = useState(0)
+
   return (
     <div className="max-w-4xl mx-auto">
       <div className="space-y-3">
         {items.map((it, idx) => {
           const open = openIdx === idx
           const Icon = it.icon
+
           return (
             <div key={it.title} className="card overflow-hidden">
               <button
@@ -510,6 +558,7 @@ function FaqAccordion({ items }) {
                   </span>
                   <div className="font-bold">{it.title}</div>
                 </div>
+
                 <span className="text-slate-400">{open ? '−' : '+'}</span>
               </button>
 
@@ -561,6 +610,7 @@ function InfoBannerV2({ icon: Icon, title, body, ctaLabel, ctaHref, external = f
 
 function FinalCTA() {
   const ref = useReveal(120)
+
   return (
     <div
       ref={ref}
@@ -573,6 +623,7 @@ function FinalCTA() {
             Genera una prueba criptográfica sólida en segundos y descarga tu .ots y certificado PDF.
           </p>
         </div>
+
         <div className="flex flex-wrap items-center gap-3">
           <a
             href="/dashboard"
@@ -580,6 +631,7 @@ function FinalCTA() {
           >
             Sellar mi primer archivo <ArrowRight className="size-4" />
           </a>
+
           <a
             href="/verify"
             className="inline-flex items-center gap-2 rounded-lg px-5 py-2.5 font-semibold text-slate-800 dark:text-white bg-white/80 dark:bg-white/10 border border-black/5 dark:border-white/10 hover:bg-white/95 dark:hover:bg-white/15 transition"
