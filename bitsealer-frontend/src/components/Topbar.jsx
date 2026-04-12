@@ -1,30 +1,92 @@
+import { useEffect, useRef, useState } from 'react'
+import { NavLink } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+
+const mobileNavItems = [
+    { label: 'Inicio', href: '/dashboard' },
+    { label: 'Sellar Archivo', href: '/upload' },
+    { label: 'Historial', href: '/history' },
+    { label: 'Ajustes', href: '/settings' },
+]
 
 export default function Topbar() {
     const { user, logout } = useAuth()
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    const menuRef = useRef(null)
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (menuRef.current && !menuRef.current.contains(event.target)) {
+                setMobileMenuOpen(false)
+            }
+        }
+
+        document.addEventListener('mousedown', handleClickOutside)
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
+        }
+    }, [])
 
     return (
-        <header className="h-14 border-b border-white/10 px-4 flex items-center justify-between">
+        <header className="relative h-14 border-b border-white/10 px-4 flex items-center justify-between">
+            <div className="relative md:hidden" ref={menuRef}>
+                <button
+                    type="button"
+                    onClick={() => setMobileMenuOpen((prev) => !prev)}
+                    className="px-3 py-1.5 rounded-md text-sm bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15"
+                >
+                    Menú
+                </button>
 
-            {/* Espacio vacío izquierda */}
-            <div></div>
+                {mobileMenuOpen && (
+                    <div className="absolute left-0 top-12 z-50 w-56 rounded-xl border border-gray-200 bg-white p-2 shadow-lg dark:border-neutral-800 dark:bg-neutral-900">
+                        <nav className="flex flex-col gap-1">
+                            {mobileNavItems.map((item) => (
+                                <NavLink
+                                    key={item.href}
+                                    to={item.href}
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className={({ isActive }) =>
+                                        [
+                                            'rounded-lg px-3 py-2 text-sm font-medium transition',
+                                            isActive
+                                                ? 'bg-gray-900 text-white dark:bg-white dark:text-black'
+                                                : 'text-gray-700 hover:bg-gray-100 dark:text-neutral-200 dark:hover:bg-neutral-800',
+                                        ].join(' ')
+                                    }
+                                >
+                                    {item.label}
+                                </NavLink>
+                            ))}
 
-            {/* Usuario y logout a la derecha */}
-            <div className="flex items-center gap-3">
+                            <button
+                                type="button"
+                                onClick={logout}
+                                className="mt-1 rounded-lg px-3 py-2 text-left text-sm font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-500/10"
+                            >
+                                Salir
+                            </button>
+                        </nav>
+                    </div>
+                )}
+            </div>
+
+            <div className="hidden md:block" />
+
+            <div className="flex items-center gap-3 ml-auto min-w-0">
                 {user && (
-                    <span className="text-sm text-slate-500 dark:text-slate-300">
+                    <span className="hidden sm:block truncate text-sm text-slate-500 dark:text-slate-300 max-w-[220px]">
                         {user.email}
                     </span>
                 )}
 
                 <button
                     onClick={logout}
-                    className="px-3 py-1.5 rounded-md text-sm bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15"
+                    className="hidden md:inline-flex px-3 py-1.5 rounded-md text-sm bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15"
                 >
                     Salir
                 </button>
             </div>
-
         </header>
     )
 }
