@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import * as apiAuth from '../api/auth';
+import { trackEvent } from '../utils/analytics';
 
 const AuthCtx = createContext(null);
 
@@ -17,7 +18,7 @@ export function AuthProvider({ children }) {
       // Intentar obtener perfil para verificar token
       apiAuth.getMe().then(u => {
         setUser(u);
-      }).catch(err => {
+      }).catch(() => {
         // Token inválido: limpiar
         localStorage.removeItem('bitsealer_token');
         localStorage.removeItem('bitsealer_user');
@@ -34,11 +35,16 @@ export function AuthProvider({ children }) {
   // Login function: realiza API call y guarda token + user
   const login = async ({ email, password }) => {
     const data = await apiAuth.login({ email, password });
-    // data tiene { accessToken, refreshToken, user }
+
     localStorage.setItem('bitsealer_token', data.accessToken);
     localStorage.setItem('bitsealer_user', JSON.stringify(data.user));
     localStorage.setItem('bitsealer_auth', 'ok');
     setUser(data.user);
+
+    trackEvent('login', {
+      user_email_domain: data.user?.email?.split('@')[1] || 'unknown',
+    });
+
     // Redirigir a la ruta intentada o dashboard
     const from = location.state?.from?.pathname || '/dashboard';
     navigate(from, { replace: true });
@@ -47,10 +53,16 @@ export function AuthProvider({ children }) {
   // Register function: similar a login (autologin tras registro)
   const register = async ({ name, email, password }) => {
     const data = await apiAuth.register({ name, email, password });
+
     localStorage.setItem('bitsealer_token', data.accessToken);
     localStorage.setItem('bitsealer_user', JSON.stringify(data.user));
     localStorage.setItem('bitsealer_auth', 'ok');
     setUser(data.user);
+
+    trackEvent('register', {
+      user_email_domain: data.user?.email?.split('@')[1] || 'unknown',
+    });
+
     navigate('/dashboard', { replace: true });
   };
 

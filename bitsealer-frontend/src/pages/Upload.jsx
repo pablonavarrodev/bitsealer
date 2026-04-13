@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { uploadFile } from '../api/files';
+import { trackEvent } from '../utils/analytics';
 
 export default function Upload() {
   const [file, setFile] = useState(null);
@@ -20,20 +21,26 @@ export default function Upload() {
 
   // Cálculo local de SHA-256 (no rompe backend)
   useEffect(() => {
+    if (!file) {
+      setHash('');
+      return;
+    }
+
     let cancelled = false;
 
-    async function computeSha256(f) {
+    async function computeHash() {
       try {
         setStatus('hashing');
-        const ab = await f.arrayBuffer();
-        const digest = await crypto.subtle.digest('SHA-256', ab);
-        const hashArray = Array.from(new Uint8Array(digest));
-        const hex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        const buf = await file.arrayBuffer();
+        const digest = await crypto.subtle.digest('SHA-256', buf);
+        const hex = [...new Uint8Array(digest)]
+          .map(b => b.toString(16).padStart(2, '0'))
+          .join('');
         if (!cancelled) {
           setHash(hex);
           setStatus('ready');
         }
-      } catch (e) {
+      } catch {
         if (!cancelled) {
           setHash('');
           setStatus('ready');
@@ -41,15 +48,7 @@ export default function Upload() {
       }
     }
 
-    if (file) {
-      setError('');
-      setHash('');
-      computeSha256(file);
-    } else {
-      setHash('');
-      setStatus('idle');
-    }
-
+    computeHash();
     return () => { cancelled = true; };
   }, [file]);
 
@@ -74,11 +73,25 @@ export default function Upload() {
       setError('Por favor selecciona un archivo.');
       return;
     }
+
     setStatus('loading');
     setError('');
+
     try {
-      await uploadFile(file); // respeta tu API actual
+      await uploadFile(file);
+
+      trackEvent('upload_file', {
+        file_extension: file.name.includes('.') ? file.name.split('.').pop()?.toLowerCase() || 'unknown' : 'no_extension',
+        file_size_bucket:
+          file.size < 1024 * 1024
+            ? 'lt_1mb'
+            : file.size < 5 * 1024 * 1024
+              ? '1mb_to_5mb'
+              : 'gte_5mb',
+      });
+
       setStatus('success');
+
       // Pequeña pausa visual y redirección al historial
       setTimeout(() => navigate('/history'), 600);
     } catch (err) {
@@ -170,7 +183,6 @@ export default function Upload() {
               />
             </div>
 
-            {/* toques decorativos animados */}
             <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-black/0 hover:ring-black/5 transition-all" />
           </div>
 
@@ -214,7 +226,6 @@ export default function Upload() {
                   )}
                 </div>
 
-                {/* Mini “badge” */}
                 <div className="shrink-0 px-2 py-1 rounded-md text-xs bg-orange-100 text-orange-700 dark:bg-orange-500/20 dark:text-orange-300">
                   Listo para sellar
                 </div>
