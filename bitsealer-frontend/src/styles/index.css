@@ -1,13 +1,20 @@
 @import "tailwindcss";
 
+/* Fuerza que dark:* responda a <html class="dark"> */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
 }
 
-* { box-sizing: border-box; }
+* {
+    box-sizing: border-box;
+}
 
-html, body, #root {
+html,
+body,
+#root {
     height: 100%;
 }
 
