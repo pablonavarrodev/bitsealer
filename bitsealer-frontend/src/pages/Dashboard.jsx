@@ -10,31 +10,41 @@ export default function Dashboard() {
     const [period, setPeriod] = useState('7d');
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [refreshKey, setRefreshKey] = useState(0);
+    const [refreshing, setRefreshing] = useState(false);
 
-    const fetchHistory = useCallback(() => {
-        setLoading(true);
+    const fetchHistory = useCallback(async ({ silent = false } = {}) => {
+        if (silent) {
+            setRefreshing(true);
+        } else {
+            setLoading(true);
+        }
 
-        getHistory()
-            .then(data => {
-                setHistory(data);
+        try {
+            const data = await getHistory();
+            setHistory(data);
+        } catch (err) {
+            console.error("Error fetching history:", err);
+        } finally {
+            if (silent) {
+                setRefreshing(false);
+            } else {
                 setLoading(false);
-            })
-            .catch(err => {
-                console.error("Error fetching history:", err);
-                setLoading(false);
-            });
+            }
+        }
     }, []);
 
     useEffect(() => {
         fetchHistory();
 
-        const intervalId = setInterval(fetchHistory, 60000);
+        const intervalId = setInterval(() => {
+            fetchHistory({ silent: true });
+        }, 60000);
+
         return () => clearInterval(intervalId);
-    }, [refreshKey, fetchHistory]);
+    }, [fetchHistory]);
 
     const handleRefresh = () => {
-        setRefreshKey(prev => prev + 1);
+        fetchHistory({ silent: true });
     };
 
     const { totalFiles, pendingFiles, recentPeriodCount, trendData, trendLabels } = useMemo(() => {
@@ -127,14 +137,15 @@ export default function Dashboard() {
 
                                 <button
                                     onClick={handleRefresh}
-                                    className={`w-fit text-sm font-medium transition cursor-pointer ${loading
-                                            ? 'text-gray-500 dark:text-neutral-600 cursor-not-allowed'
+                                    className={`w-fit text-sm font-medium transition cursor-pointer ${
+                                        refreshing
+                                            ? 'text-gray-500 dark:text-neutral-400 cursor-wait'
                                             : 'text-orange-500 dark:text-orange-400 hover:text-orange-600 dark:hover:text-orange-300'
-                                        }`}
+                                    }`}
                                     title="Refrescar datos del dashboard"
-                                    disabled={loading}
+                                    disabled={refreshing}
                                 >
-                                    {loading ? 'Cargando...' : 'Refrescar'}
+                                    {refreshing ? 'Actualizando...' : 'Refrescar'}
                                 </button>
                             </div>
 
@@ -143,10 +154,11 @@ export default function Dashboard() {
                                     <button
                                         key={p}
                                         onClick={() => setPeriod(p)}
-                                        className={`px-3 py-1.5 rounded-lg text-sm transition ${period === p
+                                        className={`px-3 py-1.5 rounded-lg text-sm transition ${
+                                            period === p
                                                 ? 'bg-orange-500 text-white shadow-md'
                                                 : 'bg-gray-100 dark:bg-neutral-800 text-gray-800 dark:text-neutral-200 hover:bg-gray-200 dark:hover:bg-neutral-700'
-                                            }`}
+                                        }`}
                                     >
                                         {p}
                                     </button>

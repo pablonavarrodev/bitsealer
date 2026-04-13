@@ -18,7 +18,7 @@ public class JwtUtils {
     @Value("${security.jwt.secret}")
     private String jwtSecret;
 
-    private final long jwtExpirationMs = 15 * 60 * 1000;
+    private final long jwtExpirationMs = 8 * 60 * 60 * 1000;
 
     @PostConstruct
     public void init() {
