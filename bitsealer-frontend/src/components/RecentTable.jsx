@@ -114,8 +114,8 @@ export default function RecentTable({ rows = [], title = "Últimos Sellos", show
     };
 
     return (
-        <div className="card">
-            <div className="card-pad">
+        <div className="card overflow-visible">
+            <div className="card-pad overflow-visible">
                 <div className="flex items-center justify-between gap-3">
                     <div className="text-base font-semibold">{title}</div>
                     {showViewAll && (
@@ -127,7 +127,7 @@ export default function RecentTable({ rows = [], title = "Últimos Sellos", show
             </div>
 
             {/* Vista móvil */}
-            <div className="md:hidden px-4 pb-4 space-y-3">
+            <div className="md:hidden px-4 pb-4 space-y-3 overflow-visible">
                 {safeRows.length === 0 ? (
                     <div className="rounded-xl border border-dashed border-gray-200 dark:border-neutral-800 p-4 text-sm text-gray-500 dark:text-neutral-400">
                         No hay sellos recientes todavía.
@@ -145,7 +145,7 @@ export default function RecentTable({ rows = [], title = "Últimos Sellos", show
                             }}
                             tabIndex={0}
                             role="button"
-                            className="rounded-xl border border-black/5 dark:border-white/5 p-4 cursor-pointer transition hover:bg-orange-50/70 dark:hover:bg-orange-500/10 focus:outline-none focus:ring-2 focus:ring-orange-400/40"
+                            className="rounded-xl border border-black/5 dark:border-white/5 p-4 cursor-pointer transition hover:bg-orange-50/70 dark:hover:bg-orange-500/10 focus:outline-none focus:ring-2 focus:ring-orange-400/40 overflow-visible"
                             title="Abrir detalle del sello"
                         >
                             <div className="flex items-start justify-between gap-3">
@@ -175,7 +175,7 @@ export default function RecentTable({ rows = [], title = "Últimos Sellos", show
                                 </div>
                             </div>
 
-                            <div className="mt-4 relative" onClick={(e) => e.stopPropagation()}>
+                            <div className="mt-4 relative overflow-visible" onClick={(e) => e.stopPropagation()}>
                                 <div className="inline-block w-full" ref={openIndex === i ? openMenuRef : null}>
                                     <button
                                         disabled={!r.id || !r.stampId}
@@ -192,7 +192,7 @@ export default function RecentTable({ rows = [], title = "Últimos Sellos", show
 
                                     {openIndex === i && (
                                         <div
-                                            className="absolute left-0 right-0 z-20 mt-2 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-lg"
+                                            className="absolute left-0 right-0 z-50 mt-2 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-lg"
                                             onClick={(e) => e.stopPropagation()}
                                         >
                                             <button
@@ -220,8 +220,8 @@ export default function RecentTable({ rows = [], title = "Últimos Sellos", show
             </div>
 
             {/* Vista desktop */}
-            <div className="hidden md:block overflow-x-auto">
-                <table className="min-w-full text-sm">
+            <div className="hidden md:block overflow-x-auto overflow-y-visible">
+                <table className="min-w-full text-sm overflow-visible">
                     <thead className="bg-gray-50 dark:bg-neutral-800/60 text-gray-600 dark:text-neutral-300">
                         <tr>
                             <th className="text-left font-semibold px-5 py-3">Nombre archivo</th>
@@ -232,7 +232,7 @@ export default function RecentTable({ rows = [], title = "Últimos Sellos", show
                         </tr>
                     </thead>
 
-                    <tbody>
+                    <tbody className="overflow-visible">
                         {safeRows.map((r, i) => (
                             <tr
                                 key={i}
@@ -272,8 +272,8 @@ export default function RecentTable({ rows = [], title = "Últimos Sellos", show
                                     </span>
                                 </td>
 
-                                <td className="px-5 py-3 relative">
-                                    <div className="inline-block" ref={openIndex === i ? openMenuRef : null}>
+                                <td className="px-5 py-3 relative overflow-visible">
+                                    <div className="inline-block relative overflow-visible" ref={openIndex === i ? openMenuRef : null}>
                                         <button
                                             disabled={!r.id || !r.stampId}
                                             onClick={(e) => {
@@ -289,7 +289,7 @@ export default function RecentTable({ rows = [], title = "Últimos Sellos", show
 
                                         {openIndex === i && (
                                             <div
-                                                className="absolute z-20 mt-2 w-56 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-lg"
+                                                className="absolute right-0 top-full z-50 mt-2 w-56 rounded-lg border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 shadow-lg"
                                                 onClick={(e) => e.stopPropagation()}
                                             >
                                                 <button
