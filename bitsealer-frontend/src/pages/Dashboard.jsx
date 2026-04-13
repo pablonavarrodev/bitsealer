@@ -7,7 +7,7 @@ import LineChart from '../components/charts/LineChart.jsx';
 import RecentTable from '../components/RecentTable.jsx';
 
 export default function Dashboard() {
-    const [period, setPeriod] = useState('30d');
+    const [period, setPeriod] = useState('7d');
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refreshKey, setRefreshKey] = useState(0);
