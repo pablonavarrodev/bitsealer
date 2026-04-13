@@ -34,6 +34,11 @@ function shortHash(h) {
     return `${h.slice(0, 10)}...${h.slice(-6)}`;
 }
 
+function canDownload(row) {
+    const status = (row?.estado || "").toUpperCase();
+    return Boolean(row?.id && row?.stampId && status === "SEALED");
+}
+
 export default function RecentTable({ rows = [], title = "Últimos Sellos", showViewAll = true }) {
     const [openIndex, setOpenIndex] = useState(null);
     const location = useLocation();
@@ -178,13 +183,13 @@ export default function RecentTable({ rows = [], title = "Últimos Sellos", show
                             <div className="mt-4 relative overflow-visible" onClick={(e) => e.stopPropagation()}>
                                 <div className="inline-block w-full" ref={openIndex === i ? openMenuRef : null}>
                                     <button
-                                        disabled={!r.id || !r.stampId}
+                                        disabled={!canDownload(r)}
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             setOpenIndex(openIndex === i ? null : i);
                                         }}
                                         className="inline-flex w-full items-center justify-center gap-2 px-3 py-2 rounded-md bg-orange-500 hover:bg-orange-600 disabled:opacity-40 disabled:hover:bg-orange-500 text-white text-sm font-medium"
-                                        title={!r.stampId ? "Aún no hay sello asociado" : "Descargar"}
+                                        title={canDownload(r) ? "Descargar" : "Disponible cuando el sello esté completado"}
                                     >
                                         <FileDown className="w-4 h-4" />
                                         Descargar
@@ -275,13 +280,13 @@ export default function RecentTable({ rows = [], title = "Últimos Sellos", show
                                 <td className="px-5 py-3 relative overflow-visible">
                                     <div className="inline-block relative overflow-visible" ref={openIndex === i ? openMenuRef : null}>
                                         <button
-                                            disabled={!r.id || !r.stampId}
+                                            disabled={!canDownload(r)}
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 setOpenIndex(openIndex === i ? null : i);
                                             }}
                                             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-md bg-orange-500 hover:bg-orange-600 disabled:opacity-40 disabled:hover:bg-orange-500 text-white text-xs font-medium"
-                                            title={!r.stampId ? "Aún no hay sello asociado" : "Descargar"}
+                                            title={canDownload(r) ? "Descargar" : "Disponible cuando el sello esté completado"}
                                         >
                                             <FileDown className="w-4 h-4" />
                                             Descargar
