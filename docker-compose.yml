@@ -71,12 +71,39 @@ services:
     networks:
       - bitsealer-internal
 
+  umami-db:
+    image: postgres:15
+    container_name: umami-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: umami
+      POSTGRES_USER: umami
+      POSTGRES_PASSWORD: CAMBIA_ESTA_PASSWORD
+    volumes:
+      - umami_db_data:/var/lib/postgresql/data
+    networks:
+      - bitsealer-internal
+
+  umami:
+    image: docker.umami.is/umami-software/umami:postgresql-latest
+    container_name: umami
+    restart: unless-stopped
+    depends_on:
+      - umami-db
+    environment:
+      DATABASE_URL: postgresql://umami:CAMBIA_ESTA_PASSWORD@umami-db:5432/umami
+      APP_SECRET: CAMBIA_ESTE_SECRET_LARGO_Y_RANDOM
+      TRACKER_SCRIPT_NAME: stats.js
+    networks:
+      - bitsealer-internal
+
   edge-proxy:
     image: nginx:1.27-alpine
     container_name: bitsealer-edge-proxy
     restart: unless-stopped
     depends_on:
       - frontend
+      - umami
     ports:
       - "80:80"
       - "443:443"
@@ -88,6 +115,7 @@ services:
 
 volumes:
   postgres_data:
+  umami_db_data:
 
 networks:
   bitsealer-internal:
