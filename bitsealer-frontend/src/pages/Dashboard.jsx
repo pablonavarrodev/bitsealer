@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect, useCallback } from 'react';
-import { getHistory, getBitcoinFee } from '../api/files';
+import { getHistory } from '../api/files';
 import { format } from 'date-fns';
 
 import StatCard from '../components/cards/StatCard.jsx';
@@ -11,7 +11,6 @@ export default function Dashboard() {
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refreshKey, setRefreshKey] = useState(0);
-    const [btcFee, setBtcFee] = useState('...');
 
     const fetchHistory = useCallback(() => {
         setLoading(true);
@@ -25,12 +24,6 @@ export default function Dashboard() {
                 console.error("Error fetching history:", err);
                 setLoading(false);
             });
-
-        getBitcoinFee()
-            .then(fee => {
-                setBtcFee(fee);
-            })
-            .catch(err => console.error("Could not fetch fee:", err));
     }, []);
 
     useEffect(() => {
@@ -44,21 +37,7 @@ export default function Dashboard() {
         setRefreshKey(prev => prev + 1);
     };
 
-    const getFeeDelta = (fee) => {
-        if (typeof fee !== 'number') return 0;
-
-        if (fee < 15) {
-            return 1;
-        } else if (fee <= 30) {
-            return 0;
-        } else {
-            return -1;
-        }
-    };
-
-    const feeDelta = getFeeDelta(btcFee);
-
-    const { totalFiles, pendingFiles, trendData, trendLabels } = useMemo(() => {
+    const { totalFiles, pendingFiles, recentPeriodCount, trendData, trendLabels } = useMemo(() => {
         const now = new Date();
 
         let daysCount = 30;
@@ -87,11 +66,14 @@ export default function Dashboard() {
             file.stampStatus === 'PENDING' || file.stampStatus === 'ANCHORING'
         ).length;
 
+        const recentPeriodCount = Object.values(daysMap).reduce((sum, count) => sum + count, 0);
+
         const sortedKeys = Object.keys(daysMap).sort();
 
         return {
             totalFiles: history.length,
             pendingFiles,
+            recentPeriodCount,
             trendData: sortedKeys.map(k => daysMap[k]),
             trendLabels: sortedKeys,
         };
@@ -112,18 +94,23 @@ export default function Dashboard() {
             }));
     }, [history]);
 
+    const periodLabelMap = {
+        '7d': '7 días',
+        '30d': '30 días',
+        '90d': '90 días',
+    };
+
     const mainKpis = [
-        { title: "Total Archivos", value: totalFiles.toLocaleString(), icon: "" },
+        { title: "Total archivos", value: totalFiles.toLocaleString(), icon: "" },
         {
-            title: "Archivos pendientes",
+            title: "Pendientes",
             value: pendingFiles.toLocaleString(),
             icon: ""
         },
         {
-            title: "Tarifa Rápida BTC",
-            value: typeof btcFee === 'number' ? `${btcFee} sat/vB` : btcFee,
-            icon: "",
-            delta: feeDelta
+            title: `Sellos últimos ${periodLabelMap[period]}`,
+            value: recentPeriodCount.toLocaleString(),
+            icon: ""
         },
     ];
 
