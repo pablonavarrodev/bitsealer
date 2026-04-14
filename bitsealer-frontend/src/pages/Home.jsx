@@ -185,7 +185,7 @@ export default function Home() {
 
             <div className="hidden md:block absolute -bottom-6 -left-6 w-2/3 bs-float">
               <div className="rounded-xl overflow-hidden shadow-2xl border border-white/30 dark:border-white/10 backdrop-blur bg-white/70 dark:bg-white/10">
-                <img src="/assets/screenshot-dashboard.png" alt="Dashboard BitSealer" className="w-full" />
+                <img src="/assets/screenshot-dashboard-v2.png" alt="Dashboard BitSealer" className="w-full" />
               </div>
             </div>
           </div>
@@ -339,22 +339,40 @@ export default function Home() {
 
       {/* FREE + FINAL CTA */}
       <section id="precio" className="relative">
-      <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#fff3e0] to-[#fffbeb] dark:from-amber-500/10 dark:to-amber-500/5" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#fff3e0] to-[#fffbeb] dark:from-amber-500/10 dark:to-amber-500/5" />
 
-      <div className="max-w-6xl mx-auto px-4 py-14" ref={freeRef}>
-        <InfoBannerV2
-          icon={Gift}
-          title="¿Te interesa integrar BitSealer en tu sistema?"
-          body="Esta es una primera versión pública centrada en validar el producto.
+        <div className="max-w-6xl mx-auto px-4 py-14" ref={freeRef}>
+          <InfoBannerV2
+            icon={Gift}
+            title="¿Te interesa integrar BitSealer en tu sistema?"
+            body="Esta es una primera versión pública centrada en validar el producto.
 
-    En el futuro se plantean integraciones vía API, automatización del sellado y opciones más avanzadas para equipos.
+      En el futuro se plantean integraciones vía API, automatización del sellado y opciones más avanzadas para equipos.
 
-    Si tienes un caso de uso concreto o te interesa explorar una integración, puedes contactarme directamente."
-          ctaLabel="Contactar"
-          ctaHref="mailto:?subject=Inter%C3%A9s%20en%20BitSealer&body=Hola%2C%0A%0AEstamos%20interesados%20en%20BitSealer.%0A%0A"
-        />
-      </div>
-    </section>
+      Si tienes un caso de uso concreto o te interesa explorar una integración, puedes contactarme directamente."
+          />
+
+          {/* CONTACTO */}
+          <div className="mt-6 flex flex-col items-center gap-3 text-center">
+            <p className="text-sm text-slate-600 dark:text-slate-300">
+              Correo de contacto
+            </p>
+
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText('pablo.ng.dev@gmail.com')
+              }}
+              className="px-4 py-2 rounded-lg bg-white dark:bg-white/10 border border-black/5 dark:border-white/10 text-slate-800 dark:text-white hover:bg-white/80 dark:hover:bg-white/20 transition text-sm font-medium"
+            >
+              pablo.ng.dev@gmail.com
+            </button>
+
+            <p className="text-xs text-slate-400">
+              Pulsa para copiar
+            </p>
+          </div>
+        </div>
+      </section>
 
       <PublicFooter />
     </div>
