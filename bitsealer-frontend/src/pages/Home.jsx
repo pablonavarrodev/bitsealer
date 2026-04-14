@@ -354,15 +354,12 @@ export default function Home() {
 
           {/* CONTACTO */}
           <div className="mt-6 flex flex-col items-center gap-3 text-center">
-            <p className="text-sm text-slate-600 dark:text-slate-300">
-              Correo de contacto
-            </p>
 
             <button
               onClick={() => {
                 navigator.clipboard.writeText('pablo.ng.dev@gmail.com')
               }}
-              className="px-4 py-2 rounded-lg bg-white dark:bg-white/10 border border-black/5 dark:border-white/10 text-slate-800 dark:text-white hover:bg-white/80 dark:hover:bg-white/20 transition text-sm font-medium"
+              className="px-5 py-2.5 rounded-lg bg-[#f7931a] hover:bg-[#e67e00] text-white font-semibold shadow-lg shadow-orange-200/40 transition active:scale-[0.98]"
             >
               pablo.ng.dev@gmail.com
             </button>
