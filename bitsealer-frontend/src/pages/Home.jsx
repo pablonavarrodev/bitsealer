@@ -339,19 +339,22 @@ export default function Home() {
 
       {/* FREE + FINAL CTA */}
       <section id="precio" className="relative">
-        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#fff3e0] to-[#fffbeb] dark:from-amber-500/10 dark:to-amber-500/5" />
+      <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#fff3e0] to-[#fffbeb] dark:from-amber-500/10 dark:to-amber-500/5" />
 
-        <div className="max-w-6xl mx-auto px-4 py-14" ref={freeRef}>
-          <InfoBannerV2
-            icon={Gift}
-            title="Versión pública (gratuita) + hoja de ruta"
-            body="Esta primera versión funciona con calendarios públicos de OpenTimestamps: agregación por Merkle y anclaje diferido a Bitcoin para mantener el servicio gratuito. En el futuro incorporaremos opciones de sellado más rápido con infraestructura dedicada (por ejemplo, nodo propio o calendarios privados) para casos de uso empresariales."
-            ctaLabel="Contactar (Enterprise)"
-            ctaHref="mailto:?subject=BitSealer%20-%20Inter%C3%A9s%20Enterprise&body=Hola%2C%0A%0ASomos%20una%20empresa%20interesada%20en%20BitSealer.%0A%0A-%20Volumen%20aproximado%3A%20%0A-%20Necesidad%20principal%3A%20(sellado%20r%C3%A1pido%2Finfra%20dedicada%2Fintegraci%C3%B3n%2Fcompliance)%0A-%20Detalles%20t%C3%A9cnicos%3A%20%0A-%20Contacto%3A%20%0A%0AGracias."
-            external
-          />
-        </div>
-      </section>
+      <div className="max-w-6xl mx-auto px-4 py-14" ref={freeRef}>
+        <InfoBannerV2
+          icon={Gift}
+          title="¿Te interesa integrar BitSealer en tu sistema?"
+          body="Esta es una primera versión pública centrada en validar el producto.
+
+    En el futuro se plantean integraciones vía API, automatización del sellado y opciones más avanzadas para equipos.
+
+    Si tienes un caso de uso concreto o te interesa explorar una integración, puedes contactarme directamente."
+          ctaLabel="Contactar"
+          ctaHref="mailto:?subject=Inter%C3%A9s%20en%20BitSealer&body=Hola%2C%0A%0AEstamos%20interesados%20en%20BitSealer.%0A%0A"
+        />
+      </div>
+    </section>
 
       <PublicFooter />
     </div>

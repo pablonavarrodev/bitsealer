@@ -26,17 +26,13 @@ export default function PublicNavbar() {
             Cómo funciona
           </button>
 
-          <button onClick={() => scrollTo('verificar')} className="hover:text-[#f7931a]">
-            Verificar
-          </button>
-
           <button onClick={() => scrollTo('faq')} className="hover:text-[#f7931a]">
             FAQ
           </button>
 
           {/* ESTE ES EL QUE QUERÍAS */}
           <button onClick={() => scrollTo('precio')} className="hover:text-[#f7931a]">
-            Enterprise
+            Contactar
           </button>
 
           <a
